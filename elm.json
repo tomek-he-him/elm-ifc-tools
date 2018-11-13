@@ -1,0 +1,19 @@
+{
+    "type": "package",
+    "name": "architectcodes/elm-ifc-utils",
+    "summary": "A set of tools for working with IFC files in Elm",
+    "license": "MIT",
+    "version": "1.0.0",
+    "exposed-modules": [
+        "Ifc.Guid"
+    ],
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "dependencies": {
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/regex": "1.0.0 <= v < 2.0.0",
+        "elm-community/random-extra": "3.0.0 <= v < 4.0.0"
+    },
+    "test-dependencies": {
+        "elm-explorations/test": "1.1.0 <= v < 2.0.0"
+    }
+}
