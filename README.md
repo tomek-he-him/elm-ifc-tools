@@ -1,4 +1,4 @@
-# elm-ifc-utils
+# elm-ifc-tools
 
 A set of tools for working with IFC files in Elm.
 

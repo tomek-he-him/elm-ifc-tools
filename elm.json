@@ -1,6 +1,6 @@
 {
     "type": "package",
-    "name": "architectcodes/elm-ifc-utils",
+    "name": "architectcodes/elm-ifc-tools",
     "summary": "A set of tools for working with IFC files in Elm",
     "license": "MIT",
     "version": "1.0.0",
