@@ -10,10 +10,8 @@ import Random exposing (Seed)
 
 Example:
 
-    ( entities, ( _, newSeed ) ) =
-        ( []
-        , Random.step Ifc.Guid.randomGuid (initialSeed 0)
-        )
+    ( entities, newSeed ) =
+        ( [], initialSeed 0 )
             |> withUniqueEntity ifcProject
                 { ownerHistory = Nothing
                 , name = Nothing
@@ -39,8 +37,12 @@ Example:
                 }
 
 -}
-withUniqueEntity : UniqueEntity attributes -> attributes -> ( List Entity, ( Guid, Seed ) ) -> ( List Entity, ( Guid, Seed ) )
-withUniqueEntity uniqueEntity attributes ( entities, ( guid, currentSeed ) ) =
+withUniqueEntity : UniqueEntity attributes -> attributes -> ( List Entity, Seed ) -> ( List Entity, Seed )
+withUniqueEntity uniqueEntity attributes ( entities, currentSeed ) =
+    let
+        ( guid, newSeed ) =
+            Random.step randomGuid currentSeed
+    in
     ( uniqueEntity attributes guid :: entities
-    , Random.step randomGuid currentSeed
+    , newSeed
     )
