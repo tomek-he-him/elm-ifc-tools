@@ -21,8 +21,8 @@ ifcProject :
         , unitsInContext : Maybe Entity
         }
 ifcProject attributes =
-    ifcRootEntity attributes
-        "IfcProject"
+    ifcRootEntity "IfcProject"
+        attributes
         [ optional label attributes.objectType
         , optional label attributes.longName
         , optional label attributes.phase
@@ -46,8 +46,8 @@ ifcBuilding :
         , buildingAddress : Maybe Entity
         }
 ifcBuilding attributes =
-    ifcRootEntity attributes
-        "IfcBuilding"
+    ifcRootEntity "IfcBuilding"
+        attributes
         [ optional label attributes.objectType
         , optional referenceTo attributes.objectPlacement
         , optional referenceTo attributes.representation
@@ -59,8 +59,8 @@ ifcBuilding attributes =
         ]
 
 
-ifcRootEntity : { a | ownerHistory : Maybe Entity, name : Maybe String, description : Maybe String } -> String -> List Attribute -> Guid -> Entity
-ifcRootEntity { ownerHistory, name, description } entityName attributes guid =
+ifcRootEntity : String -> { a | ownerHistory : Maybe Entity, name : Maybe String, description : Maybe String } -> List Attribute -> Guid -> Entity
+ifcRootEntity entityName { ownerHistory, name, description } attributes guid =
     Step.entity entityName <|
         string (Guid.toString guid)
             :: optional referenceTo ownerHistory
