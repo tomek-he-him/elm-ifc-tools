@@ -84,14 +84,14 @@ ifcWall attributes =
 ifcProductDefinitionShape :
     { name : Maybe String
     , description : Maybe String
-    , representations : Maybe (List Entity)
+    , representations : List Entity
     }
     -> Entity
-ifcProductDefinitionShape { name, describe, representations } =
+ifcProductDefinitionShape { name, description, representations } =
     Step.entity "IfcProductDefinitionShape"
         [ optional label name
         , optional string description
-        , optional referenceTo representations
+        , list referenceTo representations
         ]
 
 
