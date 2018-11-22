@@ -33,20 +33,20 @@ program
         };
       });
 
-    const phantomType = `type ${ifcClass} =\n${indent(ifcClass)}`;
-
     const typeAnnotation = `${functionName} :\n${indent(
       `{${attributes
         .map((attribute) => {
-          const baseType = {
+          const elmType = `${attribute.isList ? 'List ' : ''}${{
             IfcLabel: 'String',
             IfcText: 'String',
-          }[attribute.ifcType] || `IfcEntity ${attribute.ifcType}`;
-          const typeWithList = attribute.isList ? `List (${baseType})` : baseType;
-          const typeWithMaybe = attribute.isOptional ? `Maybe (${typeWithList})` : typeWithList;
-          return ` ${attribute.elmParameter} : ${typeWithMaybe}\n`;
+          }[attribute.ifcType] || 'Entity'}`;
+          return ` ${attribute.elmParameter} : ${(attribute.isOptional
+            && attribute.isList
+            && `Maybe (${elmType})`)
+            || (attribute.isOptional && `Maybe ${elmType}`)
+            || elmType}\n`;
         })
-        .join(',')}}\n-> IfcEntity ${ifcClass}`,
+        .join(',')}}\n-> Entity`,
     )}`;
 
     const functionBody = `${functionName} { ${attributes
@@ -57,13 +57,13 @@ program
           attribute => ` ${attribute.isOptional ? 'optional ' : ''}${attribute.isList ? 'list ' : ''}${{
             IfcLabel: 'label',
             IfcText: 'string',
-          }[attribute.ifcType] || 'ifcEntity'} ${attribute.elmParameter}\n`,
+          }[attribute.ifcType] || 'referenceTo'} ${attribute.elmParameter}\n`,
         )
         .join(',')}]`,
       { levels: 2 },
     )}`;
 
-    process.stdout.write(`\n\n\n${phantomType}\n\n\n${typeAnnotation}\n${functionBody}\n`);
+    process.stdout.write(`${typeAnnotation}\n${functionBody}\n`);
   });
 
 program.parse(process.argv);
