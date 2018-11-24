@@ -25,8 +25,16 @@ program
         const elmParameter = camelCase(ifcAttribute);
         const isOptional = cardinality === '?';
         const isList = cardinality.match(/\[/);
+        const [elmType, elmAttributeFunction] = (ifcType === 'IfcLabel' && ['String', 'string'])
+          || (ifcType === 'IfcText' && ['String', 'string'])
+          || (ifcType === 'IfcReal' && ['Float', 'float'])
+          || (ifcType === 'IfcLengthMeasure' && ['Float', 'float'])
+          || (ifcType === 'IfcPositiveLengthMeasure' && ['Float', 'float'])
+          || (/Enum$/.test(ifcType) && ['String', 'enum']) || ['Entity', 'referenceTo'];
         return {
           elmParameter,
+          elmType,
+          elmAttributeFunction,
           ifcType,
           isOptional,
           isList,
@@ -36,15 +44,9 @@ program
     const typeAnnotation = `${functionName} :\n${indent(
       `{${attributes
         .map((attribute) => {
-          const elmType = `${attribute.isList ? 'List ' : ''}${{
-            IfcLabel: 'String',
-            IfcText: 'String',
-          }[attribute.ifcType] || 'Entity'}`;
-          return ` ${attribute.elmParameter} : ${(attribute.isOptional
-            && attribute.isList
-            && `Maybe (${elmType})`)
-            || (attribute.isOptional && `Maybe ${elmType}`)
-            || elmType}\n`;
+          const typeWithList = attribute.isList ? `List (${attribute.elmType})` : attribute.elmType;
+          const typeWithMaybe = attribute.isOptional ? `Maybe (${typeWithList})` : typeWithList;
+          return ` ${attribute.elmParameter} : ${typeWithMaybe}\n`;
         })
         .join(',')}}\n-> Entity`,
     )}`;
@@ -54,10 +56,9 @@ program
       .join(', ')} } =\n    Step.entity "${ifcClass}"\n${indent(
       `[${attributes
         .map(
-          attribute => ` ${attribute.isOptional ? 'optional ' : ''}${attribute.isList ? 'list ' : ''}${{
-            IfcLabel: 'label',
-            IfcText: 'string',
-          }[attribute.ifcType] || 'referenceTo'} ${attribute.elmParameter}\n`,
+          attribute => ` ${attribute.isOptional ? 'optional ' : ''}${attribute.isList ? 'list ' : ''}${
+            attribute.elmAttributeFunction
+          } ${attribute.elmParameter}\n`,
         )
         .join(',')}]`,
       { levels: 2 },

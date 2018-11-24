@@ -1,8 +1,8 @@
-module Ifc.Entity exposing (UniqueEntity, ifcBuilding, ifcProject, ifcRootEntity, ifcWall)
+module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProject, ifcRootEntity, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
 
 import Ifc.Guid as Guid exposing (Guid)
 import Ifc.Types exposing (label, optional)
-import Iso10303 as Step exposing (Attribute, Entity, enum, float, list, null, referenceTo, string)
+import Iso10303 as Step exposing (Attribute, Entity, default, enum, float, int, list, null, referenceTo, string)
 
 
 type alias UniqueEntity attributes =
@@ -92,6 +92,135 @@ ifcProductDefinitionShape { name, description, representations } =
         [ optional label name
         , optional string description
         , list referenceTo representations
+        ]
+
+
+ifcUnitAssignment :
+    { units : List Entity
+    }
+    -> Entity
+ifcUnitAssignment { units } =
+    Step.entity "IfcUnitAssignment"
+        [ list referenceTo units
+        ]
+
+
+ifcSiUnit :
+    { unitType : String
+    , prefix : Maybe String
+    , name : String
+    }
+    -> Entity
+ifcSiUnit { unitType, prefix, name } =
+    Step.entity "IfcSIUnit"
+        [ default
+        , string unitType
+        , optional string prefix
+        , string name
+        ]
+
+
+ifcShapeRepresentation :
+    { contextOfItems : Entity
+    , representationIdentifier : Maybe String
+    , representationType : Maybe String
+    , items : List Entity
+    }
+    -> Entity
+ifcShapeRepresentation { contextOfItems, representationIdentifier, representationType, items } =
+    Step.entity "IfcShapeRepresentation"
+        [ referenceTo contextOfItems
+        , optional label representationIdentifier
+        , optional label representationType
+        , list referenceTo items
+        ]
+
+
+ifcGeometricRepresentationContext :
+    { contextIdentifier : Maybe String
+    , contextType : Maybe String
+    , coordinateSpaceDimension : Int
+    , precision : Maybe Entity
+    , worldCoordinateSystem : Entity
+    , trueNorth : Maybe Entity
+    }
+    -> Entity
+ifcGeometricRepresentationContext { contextIdentifier, contextType, coordinateSpaceDimension, precision, worldCoordinateSystem, trueNorth } =
+    Step.entity "IfcGeometricRepresentationContext"
+        [ optional label contextIdentifier
+        , optional label contextType
+        , int coordinateSpaceDimension
+        , optional referenceTo precision
+        , referenceTo worldCoordinateSystem
+        , optional referenceTo trueNorth
+        ]
+
+
+ifcDirection :
+    { directionRatios : List Float
+    }
+    -> Entity
+ifcDirection { directionRatios } =
+    Step.entity "IfcDirection"
+        [ list float directionRatios
+        ]
+
+
+ifcAxis2Placement3D :
+    { location : Entity
+    , axis : Maybe Entity
+    , refDirection : Maybe Entity
+    }
+    -> Entity
+ifcAxis2Placement3D { location, axis, refDirection } =
+    Step.entity "IfcAxis2Placement3D"
+        [ referenceTo location
+        , optional referenceTo axis
+        , optional referenceTo refDirection
+        ]
+
+
+ifcCartesianPoint :
+    { coordinates : List Float
+    }
+    -> Entity
+ifcCartesianPoint { coordinates } =
+    Step.entity "IfcCartesianPoint"
+        [ list float coordinates
+        ]
+
+
+ifcExtrudedAreaSolid :
+    { sweptArea : Entity
+    , position : Maybe Entity
+    , extrudedDirection : Entity
+    , depth : Entity
+    }
+    -> Entity
+ifcExtrudedAreaSolid { sweptArea, position, extrudedDirection, depth } =
+    Step.entity "IfcExtrudedAreaSolid"
+        [ referenceTo sweptArea
+        , optional referenceTo position
+        , referenceTo extrudedDirection
+        , referenceTo depth
+        ]
+
+
+ifcRectangleProfileDef :
+    { profileType : String
+    , profileName : Maybe String
+    , position : Maybe Entity
+    , xDim : Float
+    , yDim : Float
+    }
+    -> Entity
+ifcRectangleProfileDef { profileType, profileName, position, xDim, yDim } =
+    Step.entity "IfcRectangleProfileDef"
+        [ string profileType
+        , optional string profileName
+        , optional referenceTo position
+        , float xDim
+        , float yDim
         ]
 
 
