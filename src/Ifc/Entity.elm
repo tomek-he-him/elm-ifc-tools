@@ -1,4 +1,4 @@
-module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProject, ifcRootEntity, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
+module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRootEntity, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
 
 import Ifc.Guid as Guid exposing (Guid)
 import Ifc.Types exposing (label, optional)
@@ -194,7 +194,7 @@ ifcExtrudedAreaSolid :
     { sweptArea : Entity
     , position : Maybe Entity
     , extrudedDirection : Entity
-    , depth : Entity
+    , depth : Float
     }
     -> Entity
 ifcExtrudedAreaSolid { sweptArea, position, extrudedDirection, depth } =
@@ -202,7 +202,7 @@ ifcExtrudedAreaSolid { sweptArea, position, extrudedDirection, depth } =
         [ referenceTo sweptArea
         , optional referenceTo position
         , referenceTo extrudedDirection
-        , referenceTo depth
+        , float depth
         ]
 
 
