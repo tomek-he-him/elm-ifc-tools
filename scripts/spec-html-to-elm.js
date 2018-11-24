@@ -41,28 +41,42 @@ program
         };
       });
 
-    const typeAnnotation = `${functionName} :\n${indent(
-      `{${attributes
-        .map((attribute) => {
-          const typeWithList = attribute.isList ? `List (${attribute.elmType})` : attribute.elmType;
-          const typeWithMaybe = attribute.isOptional ? `Maybe (${typeWithList})` : typeWithList;
-          return ` ${attribute.elmParameter} : ${typeWithMaybe}\n`;
-        })
-        .join(',')}}\n-> Entity`,
-    )}`;
+    const extendsIfcRoot = /^IfcRoot$/m.test(stdin);
+    const attributesRecordAnnotation = attributes
+      .filter(attribute => attribute.ifcType !== 'IfcGloballyUniqueId')
+      .map((attribute) => {
+        const typeWithList = attribute.isList ? `List (${attribute.elmType})` : attribute.elmType;
+        const typeWithMaybe = attribute.isOptional ? `Maybe (${typeWithList})` : typeWithList;
+        return ` ${attribute.elmParameter} : ${typeWithMaybe}\n`;
+      })
+      .join(',');
+    const typeAnnotation = `${functionName} :\n${
+      extendsIfcRoot
+        ? `${indent('UniqueEntity')}\n${indent(`{${attributesRecordAnnotation}}`, { levels: 2 })}`
+        : `${indent(`{${attributesRecordAnnotation}}\n-> Entity`)}`
+    }`;
 
-    const functionBody = `${functionName} { ${attributes
-      .map(attribute => attribute.elmParameter)
-      .join(', ')} } =\n    Step.entity "${ifcClass}"\n${indent(
-      `[${attributes
-        .map(
-          attribute => ` ${attribute.isOptional ? 'optional ' : ''}${attribute.isList ? 'list ' : ''}${
-            attribute.elmAttributeFunction
-          } ${attribute.elmParameter}\n`,
-        )
-        .join(',')}]`,
-      { levels: 2 },
-    )}`;
+    const attributeMapping = attribute => ` ${attribute.isOptional ? 'optional ' : ''}${attribute.isList ? 'list ' : ''}${
+      attribute.elmAttributeFunction
+    } ${attribute.elmParameter}\n`;
+    const functionBody = extendsIfcRoot
+      ? `${functionName} attributes =\n    ifcRootEntity "${ifcClass}"\n${indent(
+        `attributes\n[${attributes
+          .slice(4)
+          .map(attribute => ({
+            ...attribute,
+            elmParameter: `attributes.${attribute.elmParameter}`,
+          }))
+          .map(attributeMapping)
+          .join(',')}]`,
+        { levels: 2 },
+      )}`
+      : `${functionName} { ${attributes
+        .map(attribute => attribute.elmParameter)
+        .join(', ')} } =\n    Step.entity "${ifcClass}"\n${indent(
+        `[${attributes.map(attributeMapping).join(',')}]`,
+        { levels: 2 },
+      )}`;
 
     process.stdout.write(`${typeAnnotation}\n${functionBody}\n`);
   });

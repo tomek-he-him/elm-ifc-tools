@@ -1,4 +1,4 @@
-module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRootEntity, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
+module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRelContainedInSpatialStructure, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
 
 import Ifc.Guid as Guid exposing (Guid)
 import Ifc.Types exposing (label, optional)
@@ -221,6 +221,22 @@ ifcRectangleProfileDef { profileType, profileName, position, xDim, yDim } =
         , optional referenceTo position
         , float xDim
         , float yDim
+        ]
+
+
+ifcRelContainedInSpatialStructure :
+    UniqueEntity
+        { ownerHistory : Maybe Entity
+        , name : Maybe String
+        , description : Maybe String
+        , relatedElements : List Entity
+        , relatingStructure : Entity
+        }
+ifcRelContainedInSpatialStructure attributes =
+    ifcRootEntity "IfcRelContainedInSpatialStructure"
+        attributes
+        [ list referenceTo attributes.relatedElements
+        , referenceTo attributes.relatingStructure
         ]
 
 
