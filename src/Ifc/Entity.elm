@@ -114,9 +114,9 @@ ifcSiUnit :
 ifcSiUnit { unitType, prefix, name } =
     Step.entity "IfcSIUnit"
         [ default
-        , string unitType
-        , optional string prefix
-        , string name
+        , enum unitType
+        , optional enum prefix
+        , enum name
         ]
 
 
@@ -216,7 +216,7 @@ ifcRectangleProfileDef :
     -> Entity
 ifcRectangleProfileDef { profileType, profileName, position, xDim, yDim } =
     Step.entity "IfcRectangleProfileDef"
-        [ string profileType
+        [ enum profileType
         , optional string profileName
         , optional referenceTo position
         , float xDim
