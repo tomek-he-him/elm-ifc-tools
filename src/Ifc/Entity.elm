@@ -5,21 +5,21 @@ import Ifc.Types exposing (label, optional)
 import Iso10303 as Step exposing (Attribute, Entity, default, enum, float, int, list, null, referenceTo, string)
 
 
-type alias UniqueEntity attributes =
-    attributes -> Guid -> Entity
+type alias UniqueEntity =
+    Guid -> Entity
 
 
 ifcProject :
-    UniqueEntity
-        { ownerHistory : Maybe Entity
-        , name : Maybe String
-        , description : Maybe String
-        , objectType : Maybe String
-        , longName : Maybe String
-        , phase : Maybe String
-        , representationContexts : Maybe (List Entity)
-        , unitsInContext : Maybe Entity
-        }
+    { ownerHistory : Maybe Entity
+    , name : Maybe String
+    , description : Maybe String
+    , objectType : Maybe String
+    , longName : Maybe String
+    , phase : Maybe String
+    , representationContexts : Maybe (List Entity)
+    , unitsInContext : Maybe Entity
+    }
+    -> UniqueEntity
 ifcProject attributes =
     ifcRootEntity "IfcProject"
         attributes
@@ -32,19 +32,19 @@ ifcProject attributes =
 
 
 ifcBuilding :
-    UniqueEntity
-        { ownerHistory : Maybe Entity
-        , name : Maybe String
-        , description : Maybe String
-        , objectType : Maybe String
-        , objectPlacement : Maybe Entity
-        , representation : Maybe Entity
-        , longName : Maybe String
-        , compositionType : Maybe Entity
-        , elevationOfRefHeight : Maybe Float
-        , elevationOfTerrain : Maybe Float
-        , buildingAddress : Maybe Entity
-        }
+    { ownerHistory : Maybe Entity
+    , name : Maybe String
+    , description : Maybe String
+    , objectType : Maybe String
+    , objectPlacement : Maybe Entity
+    , representation : Maybe Entity
+    , longName : Maybe String
+    , compositionType : Maybe Entity
+    , elevationOfRefHeight : Maybe Float
+    , elevationOfTerrain : Maybe Float
+    , buildingAddress : Maybe Entity
+    }
+    -> UniqueEntity
 ifcBuilding attributes =
     ifcRootEntity "IfcBuilding"
         attributes
@@ -60,16 +60,16 @@ ifcBuilding attributes =
 
 
 ifcWall :
-    UniqueEntity
-        { ownerHistory : Maybe Entity
-        , name : Maybe String
-        , description : Maybe String
-        , objectType : Maybe String
-        , objectPlacement : Maybe Entity
-        , representation : Maybe Entity
-        , tag : Maybe String
-        , predefinedType : Maybe String
-        }
+    { ownerHistory : Maybe Entity
+    , name : Maybe String
+    , description : Maybe String
+    , objectType : Maybe String
+    , objectPlacement : Maybe Entity
+    , representation : Maybe Entity
+    , tag : Maybe String
+    , predefinedType : Maybe String
+    }
+    -> UniqueEntity
 ifcWall attributes =
     ifcRootEntity "IfcWall"
         attributes
@@ -225,13 +225,13 @@ ifcRectangleProfileDef { profileType, profileName, position, xDim, yDim } =
 
 
 ifcRelContainedInSpatialStructure :
-    UniqueEntity
-        { ownerHistory : Maybe Entity
-        , name : Maybe String
-        , description : Maybe String
-        , relatedElements : List Entity
-        , relatingStructure : Entity
-        }
+    { ownerHistory : Maybe Entity
+    , name : Maybe String
+    , description : Maybe String
+    , relatedElements : List Entity
+    , relatingStructure : Entity
+    }
+    -> UniqueEntity
 ifcRelContainedInSpatialStructure attributes =
     ifcRootEntity "IfcRelContainedInSpatialStructure"
         attributes
