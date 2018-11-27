@@ -1,4 +1,4 @@
-module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRelAggregates, ifcRelContainedInSpatialStructure, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
+module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcLocalPlacement, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRelAggregates, ifcRelContainedInSpatialStructure, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
 
 import Ifc.Guid as Guid exposing (Guid)
 import Ifc.Types exposing (label, optional)
@@ -253,6 +253,18 @@ ifcRelAggregates attributes =
         attributes
         [ referenceTo attributes.relatingObject
         , list referenceTo attributes.relatedObjects
+        ]
+
+
+ifcLocalPlacement :
+    { placementRelTo : Maybe Entity
+    , relativePlacement : Entity
+    }
+    -> Entity
+ifcLocalPlacement { placementRelTo, relativePlacement } =
+    Step.entity "ifcLocalPlacement"
+        [ optional referenceTo placementRelTo
+        , referenceTo relativePlacement
         ]
 
 
