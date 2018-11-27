@@ -1,4 +1,4 @@
-module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRelContainedInSpatialStructure, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
+module Ifc.Entity exposing (UniqueEntity, ifcAxis2Placement3D, ifcBuilding, ifcCartesianPoint, ifcDirection, ifcExtrudedAreaSolid, ifcGeometricRepresentationContext, ifcProductDefinitionShape, ifcProject, ifcRectangleProfileDef, ifcRelAggregates, ifcRelContainedInSpatialStructure, ifcShapeRepresentation, ifcSiUnit, ifcUnitAssignment, ifcWall)
 
 import Ifc.Guid as Guid exposing (Guid)
 import Ifc.Types exposing (label, optional)
@@ -237,6 +237,22 @@ ifcRelContainedInSpatialStructure attributes =
         attributes
         [ list referenceTo attributes.relatedElements
         , referenceTo attributes.relatingStructure
+        ]
+
+
+ifcRelAggregates :
+    { ownerHistory : Maybe Entity
+    , name : Maybe String
+    , description : Maybe String
+    , relatingObject : Entity
+    , relatedObjects : List Entity
+    }
+    -> UniqueEntity
+ifcRelAggregates attributes =
+    ifcRootEntity "ifcRelAggregates"
+        attributes
+        [ referenceTo attributes.relatingObject
+        , list referenceTo attributes.relatedObjects
         ]
 
 

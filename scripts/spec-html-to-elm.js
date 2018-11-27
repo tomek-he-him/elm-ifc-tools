@@ -50,11 +50,9 @@ program
         return ` ${attribute.elmParameter} : ${typeWithMaybe}\n`;
       })
       .join(',');
-    const typeAnnotation = `${functionName} :\n${
-      extendsIfcRoot
-        ? `${indent('UniqueEntity')}\n${indent(`{${attributesRecordAnnotation}}`, { levels: 2 })}`
-        : `${indent(`{${attributesRecordAnnotation}}\n-> Entity`)}`
-    }`;
+    const typeAnnotation = `${functionName} :\n${indent(
+      `{${attributesRecordAnnotation}}\n-> ${extendsIfcRoot ? 'UniqueEntity' : 'Entity'}`,
+    )}`;
 
     const attributeMapping = attribute => ` ${attribute.isOptional ? 'optional ' : ''}${attribute.isList ? 'list ' : ''}${
       attribute.elmAttributeFunction
